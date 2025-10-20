@@ -7,13 +7,7 @@ sudo apt update && sudo apt full-upgrade -y
 echo "=== Grundläggande verktyg ==="
 sudo apt install -y git curl vim htop build-essential unzip
 
-echo "=== Tailscale ==="
-curl -fsSL https://tailscale.com/install.sh | sh
-sudo systemctl enable tailscaled
-sudo systemctl start tailscaled
-echo "Kör 'sudo tailscale up' efter omstart för att logga in i ditt nätverk."
-
-echo "=== Aktiverar SSH och VNC ==="
+echo "=== SSH och VNC ==="
 sudo raspi-config nonint do_ssh 0
 sudo raspi-config nonint do_vnc 0
 sudo systemctl enable ssh
@@ -26,10 +20,10 @@ sudo sed -i '/CONF_SWAPSIZE=/d' /etc/dphys-swapfile
 echo "CONF_SWAPSIZE=1024" | sudo tee -a /etc/dphys-swapfile
 sudo systemctl restart dphys-swapfile
 
-echo "=== Webbläsare: Firefox ESR ==="
+echo "=== Firefox ESR (snabbare än Chromium på Pi 3B+) ==="
 sudo apt install -y firefox-esr gvfs-backends gvfs-fuse
 
-echo "=== Kontorssvit ==="
+echo "=== LibreOffice ==="
 sudo apt install -y libreoffice
 
 echo "=== RetroPie ==="
@@ -40,7 +34,7 @@ fi
 cd RetroPie-Setup
 sudo ./retropie_setup.sh --all --quiet
 
-echo "=== Installerar rclone för Google Drive ==="
+echo "=== rclone för Google Drive ==="
 sudo apt install -y rclone
 mkdir -p ~/GoogleDrive
 
@@ -51,7 +45,7 @@ rclone sync "gdrive:" ~/GoogleDrive --progress --drive-use-trash=false
 EOF
 chmod +x ~/sync_gdrive.sh
 
-echo "=== Lägger till systemd-timer för automatisk synk var 30:e minut ==="
+echo "=== systemd-timer för automatisk Google Drive-synk ==="
 cat << 'EOF' | sudo tee /etc/systemd/system/gdrive-sync.service > /dev/null
 [Unit]
 Description=Sync Google Drive to local folder
@@ -78,14 +72,13 @@ EOF
 sudo systemctl enable gdrive-sync.timer
 sudo systemctl start gdrive-sync.timer
 
-echo "=== Förbereder Pi-hole (valfritt) ==="
+echo "=== Pi-hole förberett (installera senare om du vill) ==="
 echo "Installera vid behov med:"
 echo "  curl -sSL https://install.pi-hole.net | bash"
 
-echo "=== Slut ==="
+echo "=== SLUT ==="
 echo ""
-echo "👉 Efter omstart:"
-echo "1. Kör 'sudo tailscale up' för att koppla ihop Pi med nätverket."
-echo "2. Kör 'rclone config' för att lägga till Google Drive (välj 'drive')."
-echo "   Därefter synkas mappen ~/GoogleDrive automatiskt var 30:e minut."
-echo "3. Starta RetroPie via menyn eller 'emulationstation'."
+echo "👉 Tailscale hoppar vi över på Pi 3B+ 32-bit."
+echo "👉 Efter omstart kan du:"
+echo "   1. Logga in på Google Drive med 'rclone config'."
+echo "   2. Starta RetroPie via menyn eller 'emulationstation'."
