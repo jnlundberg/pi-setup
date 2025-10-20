@@ -20,9 +20,9 @@ sudo systemctl enable ssh
 echo "=== Prestandaoptimering för Pi 3B+ ==="
 sudo sed -i '/^gpu_mem=/d' /boot/config.txt
 echo "gpu_mem=128" | sudo tee -a /boot/config.txt
-sudo sed -i '/CONF_SWAPSIZE=/d' /etc/dphys-swapfile
-echo "CONF_SWAPSIZE=1024" | sudo tee -a /etc/dphys-swapfile
-sudo systemctl restart dphys-swapfile
+# sudo sed -i '/CONF_SWAPSIZE=/d' /etc/dphys-swapfile
+# echo "CONF_SWAPSIZE=1024" | sudo tee -a /etc/dphys-swapfile
+# sudo systemctl restart dphys-swapfile
 
 echo "=== Firefox ESR ==="
 sudo apt install -y firefox-esr gvfs-backends gvfs-fuse
