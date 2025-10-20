@@ -13,11 +13,9 @@ sudo apt update && sudo apt full-upgrade -y
 echo "=== Grundläggande verktyg ==="
 sudo apt install -y git curl vim htop build-essential unzip
 
-echo "=== SSH och VNC ==="
+echo "=== SSH ==="
 sudo raspi-config nonint do_ssh 0
-sudo raspi-config nonint do_vnc 0
 sudo systemctl enable ssh
-sudo systemctl enable vncserver-x11-serviced
 
 echo "=== Prestandaoptimering för Pi 3B+ ==="
 sudo sed -i '/^gpu_mem=/d' /boot/config.txt
