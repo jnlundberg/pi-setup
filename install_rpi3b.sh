@@ -1,6 +1,12 @@
 #!/bin/bash
 set -e
 
+# ===================================
+# Raspberry Pi 3B+ 32-bit install script
+# RetroPie + Firefox + LibreOffice + rclone + Pi-hole prep
+# Tailscale hoppas över på Pi 3B+ 32-bit
+# ===================================
+
 echo "=== Uppdaterar systemet ==="
 sudo apt update && sudo apt full-upgrade -y
 
@@ -20,7 +26,7 @@ sudo sed -i '/CONF_SWAPSIZE=/d' /etc/dphys-swapfile
 echo "CONF_SWAPSIZE=1024" | sudo tee -a /etc/dphys-swapfile
 sudo systemctl restart dphys-swapfile
 
-echo "=== Firefox ESR (snabbare än Chromium på Pi 3B+) ==="
+echo "=== Firefox ESR ==="
 sudo apt install -y firefox-esr gvfs-backends gvfs-fuse
 
 echo "=== LibreOffice ==="
@@ -45,7 +51,7 @@ rclone sync "gdrive:" ~/GoogleDrive --progress --drive-use-trash=false
 EOF
 chmod +x ~/sync_gdrive.sh
 
-echo "=== systemd-timer för automatisk Google Drive-synk ==="
+echo "=== Skapar systemd-timer för Google Drive-synk var 30:e minut ==="
 cat << 'EOF' | sudo tee /etc/systemd/system/gdrive-sync.service > /dev/null
 [Unit]
 Description=Sync Google Drive to local folder
@@ -72,13 +78,13 @@ EOF
 sudo systemctl enable gdrive-sync.timer
 sudo systemctl start gdrive-sync.timer
 
-echo "=== Pi-hole förberett (installera senare om du vill) ==="
-echo "Installera vid behov med:"
+echo "=== Pi-hole (valfritt) ==="
+echo "Du kan installera Pi-hole senare med:"
 echo "  curl -sSL https://install.pi-hole.net | bash"
 
 echo "=== SLUT ==="
 echo ""
 echo "👉 Tailscale hoppar vi över på Pi 3B+ 32-bit."
-echo "👉 Efter omstart kan du:"
-echo "   1. Logga in på Google Drive med 'rclone config'."
-echo "   2. Starta RetroPie via menyn eller 'emulationstation'."
+echo "👉 Efter omstart:"
+echo "1. Kör 'rclone config' för att logga in på Google Drive."
+echo "2. Starta RetroPie via menyn eller 'emulationstation'."
